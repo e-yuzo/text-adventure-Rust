@@ -112,6 +112,48 @@ impl Object {
     fn use_object() { //função comando do jogador
 
     }
+    fn set_id(&mut self, id: i32) {
+        self.id = id;
+    }
+    fn get_id(&self) -> i32 {
+        return self.id;
+    }
+    fn set_target_scene(&mut self, target: i32) {
+        self.target_scene = target;
+    }
+    fn get_target_scene(&self) -> i32 {
+        return self.target_scene;
+    }
+    fn set_correct_command(&mut self, command: String) {
+        self.correct_command = command;
+    }
+    fn get_correct_command(&self) -> &String {
+        return &self.correct_command;
+    }
+    fn set_positive_result(&mut self, result: String) {
+        self.positive_result = result;
+    }
+    fn get_positive_result(&self) -> &String {
+        return &self.positive_result;
+    }
+    fn set_negative_result(&mut self, result: String) {
+        self.positive_result = result;
+    }
+    fn get_negative_result(&self) -> &String {
+        return &self.negative_result;
+    }
+    fn set_description(&mut self, description: String) {
+        self.description = description;
+    }
+    fn get_description(&self) -> &String {
+        return &self.description;
+    }
+    fn set_type_obj(&mut self, type_obj: String) {
+        self.type_obj = type_obj;
+    }
+    fn get_type_obj(&self) -> &String {
+        return &self.type_obj;
+    }
     fn set_resolved(&mut self, state: bool) {
         self.resolved = state;
     }
