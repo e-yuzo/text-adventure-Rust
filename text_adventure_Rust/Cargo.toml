@@ -1,0 +1,6 @@
+[package]
+name = "text_adventure_Rust"
+version = "0.1.0"
+authors = ["victor <vjf216@outlook.com>"]
+
+[dependencies]
