@@ -159,7 +159,7 @@ impl Inventory {
     }
     fn list_objects(&mut self) {
         if(self.objects.len()==0){
-            println!("Inventorio está vazio.");
+            println!("Mochila está vazia.");
         }
         for i in &self.objects{
             print!("{} " ,i.get_name());
@@ -308,8 +308,12 @@ fn new_game() {
 }
 */
 
+fn clean(){
+    print!("{}[2J", 27 as char);
+
+}
 fn get_help() {
-println!("\ninventory -> mostra inventário\nuse OBJETO -> interagir com objeto da cena (abrir, usar, pressionar, ...)\nuse ITEM with OBJETO -> usar item do inventário em objeto da cena\ncheck OBJETO -> descreve objeto da cena\nget OBJETO -> obtém objeto para o inventário\nexit -> sai do jogo\n");
+println!("\nmochila -> mostra itens na mochila\nuse OBJETO -> interagir com objeto da cena (abrir, usar, pressionar, ...)\nuse ITEM with OBJETO -> usar item do inventário em objeto da cena\ncheck OBJETO -> descreve objeto da cena\nget OBJETO -> coloca objeto na mochila\nexit -> sai do jogo\n");
 }
 
 fn use_inv_object_with_scene_object() { //função comando do jogador (mudar estado do objeto cena e inventario)
@@ -400,7 +404,7 @@ fn aux_parse_user_command(command: &str,inventory:&mut Inventory,sceneID:i32,sce
     }
     
 
-    else if(commands[0]=="inventory"){
+    else if(commands[0]=="mochila"){
         if(commands.len()!=1){
             println!("Digite />help para obter ajuda.");
             return (false,nextScene);
@@ -440,7 +444,7 @@ fn aux_parse_user_command(command: &str,inventory:&mut Inventory,sceneID:i32,sce
 
         // USE + WITH
         else if(commands.len()==4 && commands[2]=="with"){
-            let objectIDInventory=scene.verify_obj(commands[1]);
+            let objectIDInventory=inventory.verify_obj(commands[1]);
             let objectIDScene=scene.verify_obj(commands[3]);
             if(objectIDInventory==-1 || objectIDScene==-1){ //verifica se está no inventario e cena
                 msg_delirium();
@@ -477,6 +481,10 @@ fn aux_parse_user_command(command: &str,inventory:&mut Inventory,sceneID:i32,sce
         get_help();
     }
 
+    else{
+        msg_delirium();
+    }
+
     
     return (false,nextScene);//Não entrou em =='exit' -> shell continua
 }
@@ -485,23 +493,73 @@ fn aux_parse_user_command(command: &str,inventory:&mut Inventory,sceneID:i32,sce
 
 
 fn pre_parser(command: &str,game:&mut Game,inventory:&mut Inventory)->(bool,i32) { //identificar qual comando foi digitado pelo jogador
-    let sceneID=game.get_actual_scene();
-    let scene=game.get_scene(sceneID);
+    let(exit,nextScene)={
+        let sceneID=game.get_actual_scene();
+        let scene=game.get_scene(sceneID);
+        aux_parse_user_command(&command.to_lowercase(),inventory,sceneID,scene)
+    };
 
-    return aux_parse_user_command(command,inventory,sceneID,scene);
+    if(exit==true){
+        println!("\n(*) Deseja salvar jogo(S/N)?\n");
+        print!("/>"); 
+        std::io::stdout().flush();
+
+        let mut string: String = String::new();
+        std::io::stdin().read_line(&mut string);
+
+        if(string.trim().to_lowercase()=="s"){
+            println!("\n(*) Insira o nome do save\n");
+            print!("/>"); 
+            std::io::stdout().flush();
+            let mut string: String = String::new();
+            std::io::stdin().read_line(&mut string);
+            save_game(game,inventory,&mut string);
+            return (exit,nextScene);
+
+        }
+    
+    }
+    return (exit,nextScene);
+
 }
+
+
 
 fn parse_user_command(command: &str,game:&mut Game,inventory:&mut Inventory)->bool{// Existe? ->n existe heap global(tem como mas...),->get e set de borrowed mut game.
-    let(bool,nextScene)=pre_parser(command,game,inventory);
+    let(exit,nextScene)=pre_parser(command,game,inventory);
     if(nextScene!=-1){
         game.set_actual_scene(nextScene);
+        display(game,nextScene);
     }
-    return bool;
+    return exit;
 }
 
 
+fn display(game:&mut Game,sceneID:i32){
+    let scene=game.get_scene(sceneID);
+    clean();
+    println!("{}\n",scene.get_title());
+    println!("{}",scene.get_description());
+    println!("\n\n\n\n\n");
 
+}
 
+fn save_game(game:&mut Game,inventory:&mut Inventory,saveName:&mut String){
+    let delimiter="***";
+    let mut save=(game,delimiter,inventory);
+    let serialized = serde_json::to_string(&save).unwrap();
+
+    let borrowed_string: &str = ".json";
+    saveName.pop();// retira \n
+    saveName.push_str(borrowed_string);
+    let mut ofile = File::create(saveName).unwrap();
+    ofile.write_all(serialized.as_bytes());
+    ofile.flush();
+    println!("\n(*) Save executado com exito\n");
+
+    
+    
+}
 
 fn new_game(file:&str)->(Game,Inventory){
     
@@ -512,10 +570,9 @@ fn new_game(file:&str)->(Game,Inventory){
     let mut contents = String::new();
     ifile.read_to_string(&mut contents)
         .expect("something went wrong reading the file");
-    contents.pop();
+    contents.pop();// retira \n
     let aux=&contents[1..];
     let mut help: Vec<&str> = aux.split(",\"***\",").collect(); //vetoriza o split em elementos do tipo &str
-    help.remove(1);
     let mut content= String::new();
 
     content=help[0].to_owned();
@@ -528,7 +585,7 @@ fn new_game(file:&str)->(Game,Inventory){
 
 
 fn load_saved_game()->(Game,Inventory){
-    println!("Insira o nome do jogo a salvar");
+    println!("\n(*) Insira o nome do save a carregar\n");
     print!("/>"); 
     std::io::stdout().flush();
 
@@ -543,9 +600,10 @@ fn load_saved_game()->(Game,Inventory){
 }
 
 fn init()->(Game,Inventory){
-    println!("-***-Aventura no deserto-***-");
-    println!("\nIniciar novo jogo -> pressione 'n'");
-    println!("Carregar jogo -> pressione 'l'");
+    clean();
+    println!("<><><><>Aventura no deserto<><><><>");
+    println!("\n(*) Iniciar novo jogo -> pressione 'n'\n");
+    println!("\n(*) Carregar jogo -> pressione 'l'\n");
 
     print!("/>"); 
     std::io::stdout().flush();
@@ -554,7 +612,7 @@ fn init()->(Game,Inventory){
     std::io::stdin().read_line(&mut string);
 
     if(string.trim().to_lowercase()=="n"){
-       return new_game("game.json");
+       return new_game("default.json");
     }
     else{
         return load_saved_game();
@@ -565,66 +623,58 @@ fn init()->(Game,Inventory){
 
 
 fn main() {
-    
-   /* let mut interruptor = Object::new(1,"SCENE_OBJECT","interruptor","Um interruptor comum. Parece estar fora de uso.","Haja luz :D","O interruptor está quebrado e sem efeito.","use pedra with interruptor",-1,false,false);
-    let mut pedra = Object::new(2,"INVENTORY_OBJECT","pedra","Uma pedra comum. Parece estar fora de uso.","NENHUM","A pedra está quebrado e sem efeito.","NENHUM",-1,false,false);
-    //let serialized = serde_json::to_string(&interruptor).unwrap();
-    //let deserialized:Object =serde_json::from_str(&serialized).unwrap();
     let mut inventory= Inventory::new();
-    //inventory.add_objects(pedra.clone());
-    //inventory.add_objects(interruptor.clone());
-    //let serialized = serde_json::to_string(&inv).unwrap();
-    let mut scene= Scene::new(1,"aaa","bbb");
-    scene.add_objects(interruptor);
-    scene.add_objects(pedra);
-    let mut game=Game::new();
-    game.add_scene(scene);
-    */
+    //"INVENTORY_OBJECT"
+    //"SCENE_OBJECT"
+    let mut feno = Object::new(1,"SCENE_OBJECT","feno","Uma planta estranha, que cobre a areia embaixo dela do sol","Você agora consegue se proteger um pouco sol, usando a planta como chapéu!","Há uma pequena cobra dentro, que so sairá morta!","use faca with feno",2,false,false);
+    let mut pedra = Object::new(2,"INVENTORY_OBJECT","faca","Uma faca afiada comum","NENHUM","Não posso fazer isso com a faca","NENHUM",-1,false,false);
+    let mut scene1= Scene::new(1,"No meio do nada [7:00 AM]","Na sua primeira noite de ferias, no deserto de Guban, você experimentou plantas locais, que provavelmente seriam barradas em um aeroporto. Uma caminhada pela madrugada e ai está você: perdido no deserto.O sol escaldante de Guban já nasceu, e está derretendo o que sobrou do seu cerebro, no horizente tudo que se vê são dunas de areia. Você tem uma mochila vazia nas costas e uma FACA proximo ao pé. Ao seu lado há uma planta que mais parece um FENO.");
+    scene1.add_objects(feno);
+    scene1.add_objects(pedra);
 
-    /*
+
+    let mut cacto = Object::new(3,"SCENE_OBJECT","cacto","Um animal com muita fome tentaria comer","Não foi a melhor refeição que você teve...","É preciso abrir esse cacto dos espinhos","use faca with cacto",-1,false,false);
+    let mut cranio = Object::new(4,"INVENTORY_OBJECT","cranio","Um cranio qualquer","NENHUM","Não dá para fazer isso com um pedaço de osso","NENHUM",-1,false,false);
+    let mut scene2= Scene::new(2,"No meio do nada [8:30 AM]","Já faz um bom tempo que você não come algo...Você ao olhar ao lado encontra um CRANIO de um camelo que já morreu há muito tempo... em meio a imensidão da areia você enxerga algumas plantas estranhas, dentre elas um pequeno CACTO redondo");
+    scene2.add_objects(cacto);
+    scene2.add_objects(cranio);
+
+    
+    
+    
+    let mut game=Game::new();
+    game.add_scene(scene1);
+    game.add_scene(scene2);
+    
+
+    
     let delimiter="***";
     let mut save=(game,delimiter,inventory);
     let serialized = serde_json::to_string(&save).unwrap();
-    let mut ofile = File::create("game.json").unwrap();
-    ofile.write_all(serialized.as_bytes());
+    let mut ofile = File::create("default.json").unwrap();
     ofile.write_all(serialized.as_bytes());
     ofile.flush();
-    */
-  
+    
 
 
-    /*
-    let mut ifile = File::open("game.json").expect("file not found");
-    let mut contents = String::new();
-    ifile.read_to_string(&mut contents)
-        .expect("something went wrong reading the file");
-    contents.pop();
-    let aux=&contents[1..];
-    let mut help: Vec<&str> = aux.split(",\"***\",").collect(); //vetoriza o split em elementos do tipo &str
-    help.remove(1);
-    //println!("{}",contents);
-    let mut content= String::new();
+    
+   
+    
 
-    content=help[0].to_owned();
-    game=serde_json::from_str(&content).unwrap();
-    content=help[1].to_owned();
-    inventory=serde_json::from_str(&content).unwrap();
-    */
-
-   // let mut game=Game::new();
-    //let mut inventory= Inventory::new();
-
-
+   
     let (game,inventory)=init();
     let mut game=game;
     let mut inventory=inventory;
 
-    
+    let mut sceneID=game.get_actual_scene();
     let finalSceneID=10;
-
     let mut end=true;
-    while(end){//controle do fluxo do jogo
-        while(true){ //controle dos comandos
+
+    display(&mut game,sceneID);
+
+
+    while(end && sceneID!=finalSceneID){//controle do fluxo do jogo
+            
             print!("/>"); 
             std::io::stdout().flush();
             let mut string: String = String::new();
@@ -634,18 +684,13 @@ fn main() {
             let commands: Vec<&str> = split.collect();
             if(parse_user_command(command,&mut game,&mut inventory)){//caso seja exit
                 end=false;
-                break;
             }   
-        }
+            sceneID=game.get_actual_scene();
     }
 
 
+
 }
-
-
-
-
-
 
 
 
