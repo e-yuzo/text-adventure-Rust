@@ -293,7 +293,7 @@ impl Object {
 }
 
 #[allow(warnings)]
-
+/*
 fn save_game(filename: &str) {
     println!("{}", filename);
 }
@@ -306,6 +306,7 @@ fn new_game() {
     //let mut new_game = Game;
     println!("Reiniciar jogo? (S/N):\n");
 }
+*/
 
 fn get_help() {
 println!("\ninventory -> mostra inventário\nuse OBJETO -> interagir com objeto da cena (abrir, usar, pressionar, ...)\nuse ITEM with OBJETO -> usar item do inventário em objeto da cena\ncheck OBJETO -> descreve objeto da cena\nget OBJETO -> obtém objeto para o inventário\nexit -> sai do jogo\n");
@@ -497,35 +498,75 @@ fn parse_user_command(command: &str,game:&mut Game,inventory:&mut Inventory)->bo
     }
     return bool;
 }
-/*
+
+
+
+
+
+fn new_game(file:&str)->(Game,Inventory){
+    
+    let mut game=Game::new();
+    let mut inventory= Inventory::new();
+
+    let mut ifile = File::open(file.trim()).expect("file not found");
+    let mut contents = String::new();
+    ifile.read_to_string(&mut contents)
+        .expect("something went wrong reading the file");
+    contents.pop();
+    let aux=&contents[1..];
+    let mut help: Vec<&str> = aux.split(",\"***\",").collect(); //vetoriza o split em elementos do tipo &str
+    help.remove(1);
+    let mut content= String::new();
+
+    content=help[0].to_owned();
+    game=serde_json::from_str(&content).unwrap();
+    content=help[1].to_owned();
+    inventory=serde_json::from_str(&content).unwrap();
+    return(game,inventory);
+
+}
+
+
+fn load_saved_game()->(Game,Inventory){
+    println!("Insira o nome do jogo a salvar");
+    print!("/>"); 
+    std::io::stdout().flush();
+
+    let mut save: String = String::new();
+    let borrowed_string: &str = ".json";
+    std::io::stdin().read_line(&mut save);
+    save.pop();// retira \n
+    save.push_str(borrowed_string);
+    return new_game(&save); 
+    
+    
+}
+
 fn init()->(Game,Inventory){
     println!("-***-Aventura no deserto-***-");
-    println!("\nIniciar novo jogo <'n'>");
-    println!("Carregar jogo <'l'>");
+    println!("\nIniciar novo jogo -> pressione 'n'");
+    println!("Carregar jogo -> pressione 'l'");
 
     print!("/>"); 
     std::io::stdout().flush();
 
     let mut string: String = String::new();
     std::io::stdin().read_line(&mut string);
-    if(string.trim()=="n"){
-       
+
+    if(string.trim().to_lowercase()=="n"){
+       return new_game("game.json");
     }
     else{
-        let mut ifile = File::open("game.json").expect("file not found");
-        let mut contents = String::new();
-        ifile.read_to_string(&mut contents)
-            .expect("something went wrong reading the file");
-        let save=serde_json::from_str(&contents).unwrap();
-        return (save.get_game(),save.get_inventory());
+        return load_saved_game();
     }
 
 }
-*/
+
 
 
 fn main() {
-    let mut interruptor = Object::new(1,"SCENE_OBJECT","interruptor","Um interruptor comum. Parece estar fora de uso.","Haja luz :D","O interruptor está quebrado e sem efeito.","use pedra with interruptor",-1,false,false);
+    
+   /* let mut interruptor = Object::new(1,"SCENE_OBJECT","interruptor","Um interruptor comum. Parece estar fora de uso.","Haja luz :D","O interruptor está quebrado e sem efeito.","use pedra with interruptor",-1,false,false);
     let mut pedra = Object::new(2,"INVENTORY_OBJECT","pedra","Uma pedra comum. Parece estar fora de uso.","NENHUM","A pedra está quebrado e sem efeito.","NENHUM",-1,false,false);
     //let serialized = serde_json::to_string(&interruptor).unwrap();
     //let deserialized:Object =serde_json::from_str(&serialized).unwrap();
@@ -538,36 +579,48 @@ fn main() {
     scene.add_objects(pedra);
     let mut game=Game::new();
     game.add_scene(scene);
-    
- 
+    */
 
-
-    let serialized = serde_json::to_string(&game).unwrap();
+    /*
+    let delimiter="***";
+    let mut save=(game,delimiter,inventory);
+    let serialized = serde_json::to_string(&save).unwrap();
     let mut ofile = File::create("game.json").unwrap();
     ofile.write_all(serialized.as_bytes());
+    ofile.write_all(serialized.as_bytes());
     ofile.flush();
-
+    */
   
 
 
-    
+    /*
     let mut ifile = File::open("game.json").expect("file not found");
     let mut contents = String::new();
     ifile.read_to_string(&mut contents)
         .expect("something went wrong reading the file");
-    //let help: Vec<&str> = contents.split(",***,").collect(); //vetoriza o split em elementos do tipo &str
-    println!("{}",contents);
-    game=serde_json::from_str(&contents).unwrap();
+    contents.pop();
+    let aux=&contents[1..];
+    let mut help: Vec<&str> = aux.split(",\"***\",").collect(); //vetoriza o split em elementos do tipo &str
+    help.remove(1);
+    //println!("{}",contents);
+    let mut content= String::new();
 
+    content=help[0].to_owned();
+    game=serde_json::from_str(&content).unwrap();
+    content=help[1].to_owned();
+    inventory=serde_json::from_str(&content).unwrap();
+    */
+
+   // let mut game=Game::new();
+    //let mut inventory= Inventory::new();
+
+
+    let (game,inventory)=init();
+    let mut game=game;
+    let mut inventory=inventory;
 
     
-    
-
-    //init();
-
-
-
-        let finalSceneID=10;
+    let finalSceneID=10;
 
     let mut end=true;
     while(end){//controle do fluxo do jogo
