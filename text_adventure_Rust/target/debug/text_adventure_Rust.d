@@ -1,0 +1,1 @@
+/home/victor/Área\ de\ Trabalho/Github/text-adventure-Rust/text_adventure_Rust/target/debug/text_adventure_Rust: /home/victor/Área\ de\ Trabalho/Github/text-adventure-Rust/text_adventure_Rust/src/main.rs

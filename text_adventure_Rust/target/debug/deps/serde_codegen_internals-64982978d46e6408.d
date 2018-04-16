@@ -1,0 +1,9 @@
+/home/victor/Área de Trabalho/Github/text-adventure-Rust/text_adventure_Rust/target/debug/deps/libserde_codegen_internals-64982978d46e6408.rlib: /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_codegen_internals-0.14.2/src/lib.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_codegen_internals-0.14.2/src/ast.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_codegen_internals-0.14.2/src/attr.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_codegen_internals-0.14.2/src/ctxt.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_codegen_internals-0.14.2/src/case.rs
+
+/home/victor/Área de Trabalho/Github/text-adventure-Rust/text_adventure_Rust/target/debug/deps/serde_codegen_internals-64982978d46e6408.d: /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_codegen_internals-0.14.2/src/lib.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_codegen_internals-0.14.2/src/ast.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_codegen_internals-0.14.2/src/attr.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_codegen_internals-0.14.2/src/ctxt.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_codegen_internals-0.14.2/src/case.rs
+
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_codegen_internals-0.14.2/src/lib.rs:
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_codegen_internals-0.14.2/src/ast.rs:
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_codegen_internals-0.14.2/src/attr.rs:
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_codegen_internals-0.14.2/src/ctxt.rs:
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_codegen_internals-0.14.2/src/case.rs:

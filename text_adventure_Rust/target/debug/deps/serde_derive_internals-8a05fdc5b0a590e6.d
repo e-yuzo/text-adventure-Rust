@@ -1,0 +1,10 @@
+/home/victor/Área de Trabalho/Github/text-adventure-Rust/text_adventure_Rust/target/debug/deps/libserde_derive_internals-8a05fdc5b0a590e6.rlib: /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_derive_internals-0.23.0/src/lib.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_derive_internals-0.23.0/src/ast.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_derive_internals-0.23.0/src/attr.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_derive_internals-0.23.0/src/ctxt.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_derive_internals-0.23.0/src/case.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_derive_internals-0.23.0/src/check.rs
+
+/home/victor/Área de Trabalho/Github/text-adventure-Rust/text_adventure_Rust/target/debug/deps/serde_derive_internals-8a05fdc5b0a590e6.d: /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_derive_internals-0.23.0/src/lib.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_derive_internals-0.23.0/src/ast.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_derive_internals-0.23.0/src/attr.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_derive_internals-0.23.0/src/ctxt.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_derive_internals-0.23.0/src/case.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_derive_internals-0.23.0/src/check.rs
+
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_derive_internals-0.23.0/src/lib.rs:
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_derive_internals-0.23.0/src/ast.rs:
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_derive_internals-0.23.0/src/attr.rs:
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_derive_internals-0.23.0/src/ctxt.rs:
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_derive_internals-0.23.0/src/case.rs:
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_derive_internals-0.23.0/src/check.rs:

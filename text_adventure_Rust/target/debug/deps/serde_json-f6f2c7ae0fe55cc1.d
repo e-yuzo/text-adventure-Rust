@@ -1,0 +1,13 @@
+/home/victor/Área de Trabalho/Github/text-adventure-Rust/text_adventure_Rust/target/debug/deps/libserde_json-f6f2c7ae0fe55cc1.rlib: /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/lib.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/macros.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/de.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/error.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/map.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/ser.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/value.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/number.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/read.rs
+
+/home/victor/Área de Trabalho/Github/text-adventure-Rust/text_adventure_Rust/target/debug/deps/serde_json-f6f2c7ae0fe55cc1.d: /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/lib.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/macros.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/de.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/error.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/map.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/ser.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/value.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/number.rs /home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/read.rs
+
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/lib.rs:
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/macros.rs:
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/de.rs:
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/error.rs:
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/map.rs:
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/ser.rs:
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/value.rs:
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/number.rs:
+/home/victor/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_json-0.9.10/src/read.rs:
