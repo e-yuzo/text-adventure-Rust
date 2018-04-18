@@ -7,6 +7,8 @@ use std::io;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::{BufRead, BufReader, Write};
+extern crate rand;
+use rand::{Rng, thread_rng};
 
 
 
@@ -39,6 +41,7 @@ impl Save{
 #[derive(Serialize, Deserialize, Debug)]
 
 struct Game {
+    save_name:String,
     actual_scene: i32,
     scenes:Vec<Scene>,
 }
@@ -46,10 +49,17 @@ struct Game {
 
 impl Game {
      fn new()->Self{
-        Self{actual_scene:1,scenes:Vec::new()}
+        Self{save_name:"default".to_owned(),actual_scene:1,scenes:Vec::new()}
     }
     fn set_actual_scene(&mut self, actual_scene: i32) {
         self.actual_scene = actual_scene;
+    }
+    fn get_save_name(&self)->&String{
+        return &self.save_name;
+    }
+    fn set_save_name(&mut self,name:String){
+        self.save_name=name;
+
     }
     fn get_actual_scene(&self) -> i32 {
         return self.actual_scene;
@@ -119,6 +129,7 @@ impl Scene {
         for i in &self.itens{
             print!("{} ",i.get_name());
         }
+
     }
     fn verify_obj(&mut self,nameObj:&str)->i32{
     let objectsScene= self.get_objects();
@@ -322,7 +333,10 @@ fn use_inv_object_with_scene_object() { //função comando do jogador (mudar est
 
 
 fn msg_delirium(){
-    println!("Você está vendo coisas melhor ir para sombra...");
+    let mut rng = rand::thread_rng();
+    let x:i32=rng.gen_range(0,4);
+    let mut phrases=vec!["O que? as susbtâncias devem estar fazendo efeito ainda...","Melhor ir devagar, seu cerebro não está acompanhando...","Perda de consciência,respiração rápida,e até a morte são sintomas de insolação e desidratação.","Miragem ou espelhismo é um fenômeno óptico muito comum em dias ensolarados, ESPECIALMENTE em paisagens desérticas","Miragem ou espelhismo é um fenômeno óptico muito comum em dias ensolarados, especialmente em paisagens desérticas"];   
+    println!("\n{}\n",phrases[x as usize]);
 }
 
 fn aux_parse_user_command(command: &str,inventory:&mut Inventory,sceneID:i32,scene:&mut Scene)->(bool,i32) { //identificar qual comando foi digitado pelo jogador
@@ -434,12 +448,20 @@ fn aux_parse_user_command(command: &str,inventory:&mut Inventory,sceneID:i32,sce
             if(obj.get_correct_command()==actualCommmand && obj.get_type_obj()=="SCENE_OBJECT"){
                 println!("{}",obj.get_positive_result());
                 obj.set_resolved();
-                nextScene=obj.get_target_scene();        
+                if(obj.get_target_scene()!=-1){
+                    nextScene=obj.get_target_scene();
+                }
+                        
+            }
+            else if(obj.get_resolved()==true && obj.get_type_obj()=="SCENE_OBJECT"){
+                println!("{}",obj.get_positive_result());
+                if(obj.get_target_scene()!=-1){
+                    nextScene=obj.get_target_scene();
+                }
             }
             else{
                 println!("{}",obj.get_negative_result());
             }
-
         }
 
         // USE + WITH
@@ -455,7 +477,9 @@ fn aux_parse_user_command(command: &str,inventory:&mut Inventory,sceneID:i32,sce
             if(objScene.get_correct_command()==actualCommmand){
                 objScene.set_resolved();
                 println!("{}",objScene.get_positive_result());
-                nextScene=objScene.get_target_scene();
+                if(objScene.get_target_scene()!=-1){
+                     nextScene=objScene.get_target_scene();
+                }
             }
             else{
                 println!("{}",objScene.get_negative_result());
@@ -506,15 +530,24 @@ fn pre_parser(command: &str,game:&mut Game,inventory:&mut Inventory)->(bool,i32)
 
         let mut string: String = String::new();
         std::io::stdin().read_line(&mut string);
-
+        let mut saveName:String={
+            game.get_save_name().clone()
+        };
         if(string.trim().to_lowercase()=="s"){
-            println!("\n(*) Insira o nome do save\n");
-            print!("/>"); 
-            std::io::stdout().flush();
-            let mut string: String = String::new();
-            std::io::stdin().read_line(&mut string);
-            save_game(game,inventory,&mut string);
-            return (exit,nextScene);
+            if(saveName=="default"){
+                println!("\n(*) Insira o nome do save\n");
+                print!("/>"); 
+                std::io::stdout().flush();
+                let mut string: String = String::new();
+                std::io::stdin().read_line(&mut string);
+                string.pop();
+                save_game(game,inventory,&mut string);
+                return (exit,nextScene);
+            }
+            else{
+                save_game(game,inventory,&mut saveName);
+                return (exit,nextScene);
+            }
 
         }
     
@@ -546,11 +579,12 @@ fn display(game:&mut Game,sceneID:i32){
 
 fn save_game(game:&mut Game,inventory:&mut Inventory,saveName:&mut String){
     let delimiter="***";
+    let mut copyName=saveName.clone();
+    game.set_save_name(copyName);
     let mut save=(game,delimiter,inventory);
-    let serialized = serde_json::to_string(&save).unwrap();
+    let serialized = serde_json::to_string(&save).unwrap();    
 
     let borrowed_string: &str = ".json";
-    saveName.pop();// retira \n
     saveName.push_str(borrowed_string);
     let mut ofile = File::create(saveName).unwrap();
     ofile.write_all(serialized.as_bytes());
@@ -561,11 +595,18 @@ fn save_game(game:&mut Game,inventory:&mut Inventory,saveName:&mut String){
     
 }
 
+fn test_name_file(nameFile:&str)->Result<(), io::Error>{
+    let mut f = try!(File::open(nameFile));
+    Ok(())
+}
+
 fn new_game(file:&str)->(Game,Inventory){
-    
+   if(test_name_file(&file).is_err()){
+        println!("(*) Save não existe => Se deseja iniciar novo jogo Digite \"default\"");
+        return load_saved_game();
+    }
     let mut game=Game::new();
     let mut inventory= Inventory::new();
-
     let mut ifile = File::open(file.trim()).expect("file not found");
     let mut contents = String::new();
     ifile.read_to_string(&mut contents)
@@ -588,7 +629,6 @@ fn load_saved_game()->(Game,Inventory){
     println!("\n(*) Insira o nome do save a carregar\n");
     print!("/>"); 
     std::io::stdout().flush();
-
     let mut save: String = String::new();
     let borrowed_string: &str = ".json";
     std::io::stdin().read_line(&mut save);
@@ -642,6 +682,7 @@ fn main() {
     
     
     
+    
     let mut game=Game::new();
     game.add_scene(scene1);
     game.add_scene(scene2);
@@ -667,7 +708,7 @@ fn main() {
     let mut inventory=inventory;
 
     let mut sceneID=game.get_actual_scene();
-    let finalSceneID=10;
+    let finalSceneID=10+1;
     let mut end=true;
 
     display(&mut game,sceneID);
