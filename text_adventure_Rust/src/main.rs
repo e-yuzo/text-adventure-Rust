@@ -18,25 +18,6 @@ extern crate serde_derive;
 extern crate serde;
 extern crate serde_json;
 
-//#[derive(Serialize, Deserialize, Debug)]
-/*
-struct Save{
-    game:Game,
-    inventory:Inventory,
-}
-impl Save{
-    fn new(game:Game,inventory:Inventory)->Self{
-        Self{game:game,inventory:inventory}
-    }
-    fn get_game(&self)->Game{
-        return self.game;
-    }
-    fn get_inventory(&self)->Inventory{
-        return self.inventory;
-    }
-}
-*/
-
 
 #[derive(Serialize, Deserialize, Debug)]
 
@@ -49,7 +30,7 @@ struct Game {
 
 impl Game {
      fn new()->Self{
-        Self{save_name:"default".to_owned(),actual_scene:1,scenes:Vec::new()}
+        Self{save_name:"new".to_owned(),actual_scene:1,scenes:Vec::new()}
     }
     fn set_actual_scene(&mut self, actual_scene: i32) {
         self.actual_scene = actual_scene;
@@ -133,7 +114,7 @@ impl Scene {
     }
     fn verify_obj(&mut self,nameObj:&str)->i32{
     let objectsScene= self.get_objects();
-    for obj in objectsScene{ // #VERFICAR -> ACHO QUE NÃO PRECISA DE & PARA ITERAR OBJ ELE JA É &MUT -> da && erro se colocar
+    for obj in objectsScene{ 
         if(obj.get_name()==nameObj){
             return obj.get_id();
         }
@@ -165,7 +146,7 @@ impl Inventory {
     fn new()->Self{
         Self{objects:Vec::new()}
     }
-    fn add_objects(&mut self,object:Object) { //função do jogador (get Object)  INSTANCIA DO OBJETO SERA *TRANSFERIDA* PARA O INVENTARIO
+    fn add_objects(&mut self,object:Object) { 
          self.objects.push(object)
     }
     fn list_objects(&mut self) {
@@ -293,7 +274,7 @@ impl Object {
     fn set_name(&mut self, name: String) {
         self.name = name;
     }
-    fn get_name(&self) -> &str { //Como se passa uma referencia(emprestimo), tem que retornar uma referencia, para retornar apenas um String tem que fazer um .copy()
+    fn get_name(&self) -> &str { 
         let str: &str = &self.name[..]; 
         return str;          //
     }
@@ -304,20 +285,6 @@ impl Object {
 }
 
 #[allow(warnings)]
-/*
-fn save_game(filename: &str) {
-    println!("{}", filename);
-}
-
-fn load_saved_game(filename: &str) {
-    println!("{}", filename);
-}
-
-fn new_game() {
-    //let mut new_game = Game;
-    println!("Reiniciar jogo? (S/N):\n");
-}
-*/
 
 fn clean(){
     print!("{}[2J", 27 as char);
@@ -327,9 +294,6 @@ fn get_help() {
 println!("\nmochila -> mostra itens na mochila\nuse OBJETO -> interagir com objeto da cena (abrir, usar, pressionar, ...)\nuse ITEM with OBJETO -> usar item do inventário em objeto da cena\ncheck OBJETO -> descreve objeto da cena\nget OBJETO -> coloca objeto na mochila\nexit -> sai do jogo\n");
 }
 
-fn use_inv_object_with_scene_object() { //função comando do jogador (mudar estado do objeto cena e inventario)
-
-}
 
 
 fn msg_delirium(){
@@ -534,7 +498,7 @@ fn pre_parser(command: &str,game:&mut Game,inventory:&mut Inventory)->(bool,i32)
             game.get_save_name().clone()
         };
         if(string.trim().to_lowercase()=="s"){
-            if(saveName=="default"){
+            if(saveName=="new"){
                 println!("\n(*) Insira o nome do save\n");
                 print!("/>"); 
                 std::io::stdout().flush();
@@ -573,7 +537,7 @@ fn display(game:&mut Game,sceneID:i32){
     clean();
     println!("{}\n",scene.get_title());
     println!("{}",scene.get_description());
-    println!("\n\n\n\n\n");
+    println!("\n\n");
 
 }
 
@@ -602,7 +566,7 @@ fn test_name_file(nameFile:&str)->Result<(), io::Error>{
 
 fn new_game(file:&str)->(Game,Inventory){
    if(test_name_file(&file).is_err()){
-        println!("(*) Save não existe => Se deseja iniciar novo jogo Digite \"default\"");
+        println!("(*) Save não existe => Se deseja iniciar novo jogo Digite \"new\"");
         return load_saved_game();
     }
     let mut game=Game::new();
@@ -652,7 +616,7 @@ fn init()->(Game,Inventory){
     std::io::stdin().read_line(&mut string);
 
     if(string.trim().to_lowercase()=="n"){
-       return new_game("default.json");
+       return new_game("new.json");
     }
     else{
         return load_saved_game();
@@ -663,59 +627,18 @@ fn init()->(Game,Inventory){
 
 
 fn main() {
-    let mut inventory= Inventory::new();
-    //"INVENTORY_OBJECT"
-    //"SCENE_OBJECT"
-    let mut feno = Object::new(1,"SCENE_OBJECT","feno","Uma planta estranha, que cobre a areia embaixo dela do sol","Você agora consegue se proteger um pouco sol, usando a planta como chapéu!","Há uma pequena cobra dentro, que so sairá morta!","use faca with feno",2,false,false);
-    let mut pedra = Object::new(2,"INVENTORY_OBJECT","faca","Uma faca afiada comum","NENHUM","Não posso fazer isso com a faca","NENHUM",-1,false,false);
-    let mut scene1= Scene::new(1,"No meio do nada [7:00 AM]","Na sua primeira noite de ferias, no deserto de Guban, você experimentou plantas locais, que provavelmente seriam barradas em um aeroporto. Uma caminhada pela madrugada e ai está você: perdido no deserto.O sol escaldante de Guban já nasceu, e está derretendo o que sobrou do seu cerebro, no horizente tudo que se vê são dunas de areia. Você tem uma mochila vazia nas costas e uma FACA proximo ao pé. Ao seu lado há uma planta que mais parece um FENO.");
-    scene1.add_objects(feno);
-    scene1.add_objects(pedra);
-
-
-    let mut cacto = Object::new(3,"SCENE_OBJECT","cacto","Um animal com muita fome tentaria comer","Não foi a melhor refeição que você teve...","É preciso abrir esse cacto dos espinhos","use faca with cacto",-1,false,false);
-    let mut cranio = Object::new(4,"INVENTORY_OBJECT","cranio","Um cranio qualquer","NENHUM","Não dá para fazer isso com um pedaço de osso","NENHUM",-1,false,false);
-    let mut scene2= Scene::new(2,"No meio do nada [8:30 AM]","Já faz um bom tempo que você não come algo...Você ao olhar ao lado encontra um CRANIO de um camelo que já morreu há muito tempo... em meio a imensidão da areia você enxerga algumas plantas estranhas, dentre elas um pequeno CACTO redondo");
-    scene2.add_objects(cacto);
-    scene2.add_objects(cranio);
-
-    
-    
-    
-    
-    let mut game=Game::new();
-    game.add_scene(scene1);
-    game.add_scene(scene2);
-    
-
-    
-    let delimiter="***";
-    let mut save=(game,delimiter,inventory);
-    let serialized = serde_json::to_string(&save).unwrap();
-    let mut ofile = File::create("default.json").unwrap();
-    ofile.write_all(serialized.as_bytes());
-    ofile.flush();
-    
-
-
-    
-   
-    
-
-   
     let (game,inventory)=init();
     let mut game=game;
     let mut inventory=inventory;
 
     let mut sceneID=game.get_actual_scene();
-    let finalSceneID=10+1;
+    let finalSceneID=15;
     let mut end=true;
 
     display(&mut game,sceneID);
+    println!("\n(*) Digite 'help' para obter ajuda.\n");
 
-
-    while(end && sceneID!=finalSceneID){//controle do fluxo do jogo
-            
+    while(end && sceneID!=finalSceneID){//controle do fluxo do jogo      
             print!("/>"); 
             std::io::stdout().flush();
             let mut string: String = String::new();
@@ -728,7 +651,6 @@ fn main() {
             }   
             sceneID=game.get_actual_scene();
     }
-
 
 
 }
