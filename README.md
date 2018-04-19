@@ -1,4 +1,3 @@
-# text-adventure-Rust
-# how to compile and execute:
-# rustc -A dead_code newAdventure.rs
-# ./newAdventure
+# Inside text-adventure-Rust/text-adventure-Rust
+# $cargo build  //first time
+# $cargo run
